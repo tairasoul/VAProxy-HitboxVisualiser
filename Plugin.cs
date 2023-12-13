@@ -43,39 +43,16 @@ namespace HitboxVisualiser
                 {
                     Create = (GameObject Page) =>
                     {
-                        Log.LogInfo("Creating HitboxVisualiser page init.");
-                        GameObject HitboxToggle = Page.AddObject("HitboxToggle");
-                        HitboxToggle.AddComponent<RectTransform>().anchoredPosition = new Vector2(-449.6534f, 158.6981f);
-                        HitboxToggle.transform.localScale = new Vector3(2.1268f, 2.1268f, 2.1268f);
-                        Toggle toggle = HitboxToggle.AddComponent<Toggle>();
-                        GameObject Label = HitboxToggle.AddObject("Label");
-                        Label.AddComponent<CanvasRenderer>();
-                        Label.AddComponent<RectTransform>().anchoredPosition = new Vector2(52.16f, -1);
-                        Label.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
-                        Text text = Label.AddComponent<Text>();
-                        text.alignment = TextAnchor.MiddleLeft;
-                        text.fontSize = 100;
-                        GameObject original = GameObject.Find("MAINMENU/Canvas/Pages/Setting/Resolution/VSync/Background");
-                        text.font = original.transform.parent.gameObject.Find("Label").GetComponent<Text>().font;
-                        text.text = "Visualize Hitboxes";
-                        text.horizontalOverflow = HorizontalWrapMode.Overflow;
-                        text.color = new Color(0.9843f, 0.6902f, 0.2314f);
-                        GameObject background = HitboxToggle.AddObject("Background");
-                        background.AddComponent<RectTransform>().anchoredPosition = new Vector2(10, 0);
-                        background.AddComponent<CanvasRenderer>();
-                        background.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
-                        Image image = background.AddComponent<Image>();
-                        image.sprite = original.GetComponent<Image>().sprite;
-                        GameObject checkmark = background.AddObject("Checkmark");
-                        checkmark.AddComponent<RectTransform>();
-                        checkmark.AddComponent<CanvasRenderer>();
-                        Image checkmarkImage = checkmark.AddComponent<Image>();
-                        checkmarkImage.enabled = false;
-                        toggle.image = checkmarkImage;
-                        checkmarkImage.sprite = original.Find("Checkmark").GetComponent<Image>().sprite;
-                        toggle.onValueChanged.AddListener((bool toggled) =>
+                        GameObject toggle = ComponentUtils.CreateToggle("Visualize Hitboxes", "hitbox.visualizer.toggle");
+                        toggle.SetParent(Page, false);
+                        toggle.GetComponent<RectTransform>().anchoredPosition = new Vector2(-449.6534f, 158.6981f);
+                        GameObject label = toggle.Find("Label");
+                        label.GetComponent<RectTransform>().anchoredPosition = new Vector2(52.16f, -1);
+                        Image checkmark = toggle.Find("Background/Checkmark").GetComponent<Image>();
+                        Toggle toggleComp = toggle.GetComponent<Toggle>();
+                        toggleComp.onValueChanged.AddListener((bool toggled) =>
                         {
-                            checkmarkImage.enabled = toggled;
+                            checkmark.enabled = toggled;
                             Visualiser.active = toggled;
                         });
                     }
