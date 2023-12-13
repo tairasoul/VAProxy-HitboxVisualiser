@@ -8,7 +8,7 @@ using Settings = SettingsAPI.Plugin;
 
 namespace HitboxVisualiser
 {
-    [BepInPlugin("vaproxy.hitbox.visualiser", "HitboxVisualiser", "1.0.0")]
+    [BepInPlugin("vaproxy.hitbox.visualiser", "HitboxVisualiser", "1.1.0")]
     public class Plugin: BaseUnityPlugin
     {
         Harmony harmony = new Harmony("vaproxy.hitbox.visualiser");
