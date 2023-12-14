@@ -44,7 +44,7 @@
       <HintPath>..\..\VA Proxy\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="SettingsAPI">
-      <HintPath>..\..\ModdingAPIS\VA.Proxy\SettingsAPI.dll</HintPath>
+      <HintPath>..\..\ModdingAPIS\VA.Proxy\SettingsAPI\SettingsAPI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
