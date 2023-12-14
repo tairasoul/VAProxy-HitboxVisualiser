@@ -48,11 +48,9 @@ namespace HitboxVisualiser
                         toggle.GetComponent<RectTransform>().anchoredPosition = new Vector2(-449.6534f, 158.6981f);
                         GameObject label = toggle.Find("Label");
                         label.GetComponent<RectTransform>().anchoredPosition = new Vector2(52.16f, -1);
-                        Image checkmark = toggle.Find("Background/Checkmark").GetComponent<Image>();
                         Toggle toggleComp = toggle.GetComponent<Toggle>();
                         toggleComp.onValueChanged.AddListener((bool toggled) =>
                         {
-                            checkmark.enabled = toggled;
                             Visualiser.active = toggled;
                         });
                     }
