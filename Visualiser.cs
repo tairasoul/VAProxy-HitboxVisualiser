@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using BepInEx;
 using Invector.vMelee;
+using Invector;
 
 namespace HitboxVisualiser
 {
     internal class Visualiser: MonoBehaviour
     {
-        bool F8Pressed = false;
+        //bool F8Pressed = false;
         public static bool active = false;
 
         internal void Update()
@@ -15,7 +16,13 @@ namespace HitboxVisualiser
             {
                 if (!hitbox.gameObject.GetComponent<VisualiserComponent>())
                 {
-                    Plugin.Log.LogInfo($"Adding VisualiserComponent to vHitBox {hitbox.name}");
+                    hitbox.gameObject.AddComponent<VisualiserComponent>();
+                }
+            }
+            foreach (vObjectDamage hitbox in GameObject.FindObjectsOfType<vObjectDamage>())
+            {
+                if (!hitbox.gameObject.GetComponent<VisualiserComponent>())
+                {
                     hitbox.gameObject.AddComponent<VisualiserComponent>();
                 }
             }
