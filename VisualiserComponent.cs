@@ -40,7 +40,6 @@ namespace HitboxVisualiser
             lineRenderer.loop = true; // Close the loop for trail
             lineRenderer.material = new Material(Shader.Find("Sprites/Default")); // Change the material
 
-            // Adjust width and color of the lines
             Color color = ((hitBox.triggerType & vHitBoxType.Damage) != (vHitBoxType)0 && (hitBox.triggerType & vHitBoxType.Recoil) == (vHitBoxType)0) ? Color.green : (((hitBox.triggerType & vHitBoxType.Damage) != (vHitBoxType)0 && (hitBox.triggerType & vHitBoxType.Recoil) != (vHitBoxType)0) ? Color.yellow : (((hitBox.triggerType & vHitBoxType.Recoil) != (vHitBoxType)0 && (hitBox.triggerType & vHitBoxType.Damage) == (vHitBoxType)0) ? Color.red : Color.black));
             color.a = 0.6f;
             lineRenderer.startWidth = 0.05f;
@@ -48,36 +47,76 @@ namespace HitboxVisualiser
             lineRenderer.startColor = color;
             lineRenderer.endColor = color;
 
-            BoxCollider collider = trigger as BoxCollider;
+            Collider colliderComp = trigger;
 
-            Vector3 center = collider.center;
-            Vector3 size = collider.size;
-
-            Vector3[] corners =
+            if (colliderComp is MeshCollider)
             {
-                center + new Vector3(size.x, size.y, size.z) * 0.5f,
-                center + new Vector3(size.x, size.y, -size.z) * 0.5f,
-                center + new Vector3(-size.x, size.y, -size.z) * 0.5f,
-                center + new Vector3(-size.x, size.y, size.z) * 0.5f,
-                center + new Vector3(size.x, -size.y, size.z) * 0.5f,
-                center + new Vector3(size.x, -size.y, -size.z) * 0.5f,
-                center + new Vector3(-size.x, -size.y, -size.z) * 0.5f,
-                center + new Vector3(-size.x, -size.y, size.z) * 0.5f
-            };
+                MeshCollider meshCollider = trigger as MeshCollider;
 
-            // Define indices to draw the edges of the box
-            int[] indices =
+                if (meshCollider != null)
+                {
+                    Mesh mesh = meshCollider.sharedMesh;
+                    if (mesh != null)
+                    {
+                        Vector3[] vertices = mesh.vertices;
+                        int[] triangles = mesh.triangles;
+
+                        lineRenderer.positionCount = triangles.Length * 2; // Each edge has 2 points
+
+                        for (int i = 0, j = 0; i < triangles.Length; i += 3)
+                        {
+                            // Draw lines for each triangle edge
+                            Vector3 v0 = vertices[triangles[i]];
+                            Vector3 v1 = vertices[triangles[i + 1]];
+                            Vector3 v2 = vertices[triangles[i + 2]];
+
+                            // Edge 0-1
+                            lineRenderer.SetPosition(j++, v0);
+                            lineRenderer.SetPosition(j++, v1);
+
+                            // Edge 1-2
+                            lineRenderer.SetPosition(j++, v1);
+                            lineRenderer.SetPosition(j++, v2);
+
+                            // Edge 2-0
+                            lineRenderer.SetPosition(j++, v2);
+                            lineRenderer.SetPosition(j++, v0);
+                        }
+                    }
+                }
+            }
+            else
             {
-                0, 1, 1, 2, 2, 3, 3, 0, // Top face
-                4, 5, 5, 6, 6, 7, 7, 4, // Bottom face
-                0, 4, 1, 5, 2, 6, 3, 7  // Vertical edges
-            };
+                BoxCollider collider = colliderComp as BoxCollider;
+                Vector3 center = collider.center;
+                Vector3 size = collider.size;
 
-            lineRenderer.positionCount = indices.Length;
+                Vector3[] corners =
+                {
+                    center + new Vector3(size.x, size.y, size.z) * 0.5f,
+                    center + new Vector3(size.x, size.y, -size.z) * 0.5f,
+                    center + new Vector3(-size.x, size.y, -size.z) * 0.5f,
+                    center + new Vector3(-size.x, size.y, size.z) * 0.5f,
+                    center + new Vector3(size.x, -size.y, size.z) * 0.5f,
+                    center + new Vector3(size.x, -size.y, -size.z) * 0.5f,
+                    center + new Vector3(-size.x, -size.y, -size.z) * 0.5f,
+                    center + new Vector3(-size.x, -size.y, size.z) * 0.5f
+                };
 
-            for (int i = 0; i < indices.Length; i++)
-            {
-                lineRenderer.SetPosition(i, corners[indices[i]]);
+                    // Define indices to draw the edges of the box
+                int[] indices =
+                {
+                    0, 1, 1, 2, 2, 3, 3, 0, // Top face
+                    4, 5, 5, 6, 6, 7, 7, 4, // Bottom face
+                    0, 4, 1, 5, 2, 6, 3, 7  // Vertical edges
+                };
+
+                lineRenderer.positionCount = indices.Length;
+
+                for (int i = 0; i < indices.Length; i++)
+                {
+                    lineRenderer.SetPosition(i, corners[indices[i]]);
+                }
             }
         }
 
